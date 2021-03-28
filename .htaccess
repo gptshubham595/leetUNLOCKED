@@ -1,0 +1,25 @@
+RewriteEngine On
+
+Options All -Indexes +FollowSymLinks
+
+IndexIgnore *
+
+# php -- BEGIN cPanel-generated handler, do not edit
+<IfModule php7_module>
+   php_flag display_errors Off
+   php_flag display_startup_errors Off
+</IfModule>
+<IfModule lsapi_module>
+   php_flag display_errors Off
+   php_flag display_startup_errors Off
+</IfModule>
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php74 .php .php7 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes 
+    </IfModule>
+</IfModule>
