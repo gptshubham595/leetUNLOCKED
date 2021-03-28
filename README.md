@@ -1,5 +1,14 @@
 # leetUNLOCKED
 
+COMPANY WISE CP PROBLEM SOLVING UNLOCKED FROM LEETCODE
+
+![image](https://user-images.githubusercontent.com/24877361/112768132-103e0380-9038-11eb-9a20-5f9d3cb1f0a7.png)
+
+![image](https://user-images.githubusercontent.com/24877361/112768130-0ddba980-9038-11eb-9ac3-529cd11dfb33.png)
+
+![image](https://user-images.githubusercontent.com/24877361/112768123-0b794f80-9038-11eb-848f-c6967f6c7587.png)
+
+
  1 start xampp
  
  2 Extract leetUNLOCKED subfiles inside C:/xampp/htdocs/.. 
