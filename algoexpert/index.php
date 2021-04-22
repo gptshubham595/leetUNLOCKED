@@ -1,13 +1,23 @@
 <?php
 session_start();
 if (empty($_SESSION['userLogin']) || $_SESSION['userLogin'] == '') {
-  header("Location: ../index.php");
+  header("Location: /index.php");
   die();
 }
-$company = $_GET['company'];
-$f = fopen($company, "r");
-$fr = fread($f, filesize($company));
-fclose($f);
+if (opendir('questions') === false){
+    //echo '<script>alert("FAILED")</script>';
+}
+if ($handle = opendir('questions')) {   
+  $a = array();
+  while (false !== ($entry = readdir($handle))) {
+
+    if ($entry != "." && $entry != "..") {
+      array_push($a, $entry);
+    }
+  }
+
+  closedir($handle);
+}
 
 ?>
 <html>
@@ -18,6 +28,10 @@ fclose($f);
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
   <style>
+    body {
+      background-color: #ffffff;
+    }
+
     [type="checkbox"]:not(:checked),
     [type="checkbox"]:checked {
       position: absolute;
@@ -86,63 +100,85 @@ fclose($f);
 </head>
 
 <body>
+
   <div class="container">
-    <table id="questions" class="table table-bordered table-striped-center table-responsive display">
+    <br>
+    <div class="float-right pull-right" style="margin:10px 10px;">
+      <form action="/leetcode/logout.php"><input type="submit" class="btn btn-danger" name="submit" value="Logout" /></form>
+    </div>
+    <div class="float-left pull-left" style="margin:10px 10px;">
+      <button onclick="goBack()">Go Back</button>
+    </div>
+    <br>
+    <table id="leetcode" class="table table-bordered table-striped-center table-responsive display" style="width: 100%">
       <thead>
         <tr>
-          <th>QNo.</th>
-          <th>Name</th>
-          <th>Accept</th>
-          <th>Difficulty</th>
-          <th>Frequency</th>
+          <th>SLN</th>
+          <th>QUESTIONS</th>
           <th>DONE</th>
         </tr>
       </thead>
       <tbody id="company_table">
-
       </tbody>
     </table>
   </div>
+  </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table-locale-all.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
   <script>
-    var company = <?php echo json_encode($fr); ?>;
-    company = company.split("\n");
+    var company = <?php echo json_encode($a); ?>;
+    company.sort();
     var k = "";
-    var c_2 = "";
-    for (var i = 0; i < company.length - 1; i++) {
-      c_2 = company[i].split(",");
+    for (var i = 1; i <= company.length; i++) {
+      if (company[i - 1].split(".")[0] == "read_md") {
+        continue;
+      }
       k += "<tr>";
-      k += "<td style='width:5em'>" + c_2[0] + "</td>";
-      k += "<td style='text-align:left'><a href='" + c_2[5] + "'>" + c_2[1] + "</a></td>";
-      k += "<td>" + c_2[2] + "</td>";
-      k += "<td>" + c_2[3] + "</td>";
-      k += "<td>" + c_2[4] + "</td>";
-      k += "<td style='width:5em'><input type='checkbox' id='" + c_2[0] + "' /><label for='" + c_2[0] + "'></label></td>";
+      k += "<td style='width:7em'>" + i + "</td>";
+      k += "<td style='text-align:left'><a href='/algoexpert/questions/read_md.php?company=" + company[i - 1] + "'>" + company[i - 1].split(".")[0] + "</a></td>";
+      k += "<td style='width:5em;'><p style='display:none' id='"+company[i - 1].split(".")[0]+"_p'></p><input type='checkbox' id='" + company[i - 1].split(".")[0] + "' /><label  for='" + company[i - 1].split(".")[0] + "'></label></td>";
       k += "</tr>";
     }
+
     document.getElementById("company_table").innerHTML = k;
-  </script>
-  <script>
     $(document).ready(function() {
-      $('#questions').DataTable({
+      $('#leetcode').DataTable({
         "pagingType": "full_numbers"
       });
     });
+    $(document).ready(function() {
+      $('#example').DataTable({
+        columnDefs: [{
+          targets: [0],
+          orderData: [0, 0]
+        }, {
+          targets: [1],
+          orderData: [1, 0]
+        }, {
+          targets: [2],
+          orderData: [2, 0]
+        }]
+      });
+    });
   </script>
+
   <script>
+      function goBack() {
+        window.history.back();
+        }
     $('input[type="checkbox"]').click(function() {
       if ($(this).prop("checked") == true) {
         console.log("Checkbox is checked.");
-        console.log($(this));
+       document.getElementById(this.id+'_p').value=this.id; 
+       $("#"+this.id+"_p").html(this.id);
       } else if ($(this).prop("checked") == false) {
+        $("#"+this.id+"_p").html("");
         console.log("Checkbox is unchecked.");
       }
     });
   </script>
+
 </body>
 
 </html>
